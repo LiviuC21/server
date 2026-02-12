@@ -1,45 +1,57 @@
-echo "<!DOCTYPE html>
-<html>
+<!DOCTYPE html>
+<html lang="ro">
 <head>
-    <meta charset='UTF-8'>
-    <meta name='viewport' content='width=device-width, initial-scale=1.0'>
-    <title>Server Control</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Control Server Liviu</title>
+    <style>
+        body { background-color: #121212; color: white; font-family: sans-serif; text-align: center; padding: 20px; }
+        .card { border: 2px solid #c0392b; border-radius: 15px; padding: 20px; margin: 20px auto; max-width: 400px; background: #1a1a1a; transition: 0.3s; }
+        .status-btn { display: inline-block; padding: 15px 30px; margin: 10px; font-size: 18px; font-weight: bold; color: white; text-decoration: none; border-radius: 10px; }
+        .online { background: #2ecc71; border-color: #27ae60; }
+        .offline { background: #c0392b; border-color: #a93226; }
+        .access-btn { background: #f1c40f; color: #000; display: block; margin: 20px auto; width: 80%; }
+        .dl-section { margin-top: 40px; padding: 20px; border: 1px dashed #444; border-radius: 10px; }
+        input { width: 80%; padding: 10px; margin: 10px 0; border-radius: 5px; border: none; }
+    </style>
 </head>
-<body style='background:#121212; color:#777; font-family:sans-serif; text-align:center; padding-top:50px;'>
-    
-    <div style='border:2px solid #e74c3c; display:inline-block; padding:20px 40px; border-radius:15px; margin-bottom: 30px;'>
-        <h1>🟢 SERVER ONLINE</h1>
-        <p>Folosește telecomanda din README pentru pornire.</p>
+<body>
+
+    <div id="mainCard" class="card">
+        <h1 id="statusEmoji">🔴</h1>
+        <h2 id="statusText">SERVER OFFLINE</h2>
+        
+        <a id="accessLink" href="http://100.84.134.45:8081" target="_blank" class="status-btn access-btn" style="display: none;">
+            📂 INTRĂ PE SERVER
+        </a>
+        
+        <p style="color: #888; font-size: 14px;">Folosește telecomanda din README pentru pornire.</p>
     </div>
 
-    <br>
-
-    <div style='background:#1e1e1e; display:inline-block; padding:30px; border-radius:15px; border: 1px solid #333; width: 80%; max-width: 400px;'>
-        <h3 style='color:#eee;'>🎵 YouTube Downloader</h3>
-        <input type='text' id='ytUrl' placeholder='Lipește link-ul YouTube aici...' 
-               style='width: 90%; padding: 12px; border-radius: 8px; border: 1px solid #444; background: #252525; color: white; margin-bottom: 20px;'>
+    <div class="dl-section">
+        <h3>🎵 YouTube Downloader</h3>
+        <input type="text" id="ytUrl" placeholder="Lipește link-ul aici...">
         <br>
-        <button onclick=\"startDownload('mp3')\" style='background: #e74c3c; color: white; padding: 12px 20px; border: none; border-radius: 8px; cursor: pointer; font-weight: bold; margin: 5px;'>
-            Descarcă MP3
-        </button>
-        <button onclick=\"startDownload('mp4')\" style='background: #3498db; color: white; padding: 12px 20px; border: none; border-radius: 8px; cursor: pointer; font-weight: bold; margin: 5px;'>
-            Descarcă MP4
-        </button>
-        <p id='statusText' style='font-size: 12px; margin-top: 15px; color: #555;'></p>
+        <button onclick="descarca('mp3')" style="background:#e74c3c; color:white; padding:10px; border:none; border-radius:5px;">MP3</button>
+        <button onclick="descarca('mp4')" style="background:#3498db; color:white; padding:10px; border:none; border-radius:5px;">MP4</button>
+        <p id="dlStatus" style="color: #f1c40f; display:none;"></p>
     </div>
 
     <script>
-    function startDownload(format) {
-        const url = document.getElementById('ytUrl').value;
-        if(!url) { alert('Te rog pune un link!'); return; }
-        
-        document.getElementById('statusText').innerText = 'Se procesează pe tabletă... te rog așteaptă.';
-        
-        // IP-ul tau de Tailscale
-        const tabletIp = '100.84.134.45'; 
-        window.location.href = 'http://' + tabletIp + ':9001/download?url=' + url + '&format=' + format;
-    }
-    </script>
+        // Verificam statusul pentru a afisa sau ascunde butonul de acces
+        const status = document.getElementById('statusText').innerText;
+        if(status.includes("ONLINE")) {
+            document.getElementById('accessLink').style.display = "block";
+            document.getElementById('mainCard').style.borderColor = "#2ecc71";
+        }
 
+        function descarca(format) {
+            const url = document.getElementById('ytUrl').value;
+            if(!url) return alert("Pune un link!");
+            document.getElementById('dlStatus').style.display = "block";
+            document.getElementById('dlStatus').innerText = "⏳ Se procesează...";
+            window.location.href = `http://100.84.134.45:9001/download?url=${url}&format=${format}`;
+        }
+    </script>
 </body>
-</html>" 
+</html>
