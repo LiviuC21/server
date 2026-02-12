@@ -13,7 +13,7 @@ Folosește butoanele de mai jos pentru a porni sau opri FileBrowser de la distan
 ### 📂 Acces Fișiere
 După ce ai apăsat pe pornire, așteaptă ~15 secunde pentru sincronizare, apoi accesează link-ul de mai jos:
 
-👉 **[INTRĂ ÎN SERVERUL DE FILME](https://liviuc21.github.io/server/)**
+👉 **[INTRĂ PE SERVER](https://liviuc21.github.io/server/)**
 
 ---
 *Notă: Dacă serverul este oprit, link-ul de acces va afișa statusul "OFFLINE".*
