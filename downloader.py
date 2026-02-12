@@ -21,7 +21,7 @@ def download():
     output_temp = f"{DOWNLOAD_PATH}/dl_{timestamp}.%(ext)s"
 
     if format_type == 'mp3':
-        cmd = ["yt-dlp", "-x", "--audio-format", "mp3", "-o", output_temp, url]
+        cmd = ["/home/phablet/miniforge3/envs/muzica/bin/yt-dlp","-x","--audio-format","mp3", "-o", output_temp, url]
     else:
         cmd = ["yt-dlp", "-f", "mp4", "-o", output_temp, url]
 
