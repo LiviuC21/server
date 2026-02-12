@@ -1,10 +1,45 @@
-<!DOCTYPE html>
+echo "<!DOCTYPE html>
 <html>
-<head><meta charset='UTF-8'></head>
-<body style='background:#121212; color:#777; font-family:sans-serif; text-align:center; padding-top:100px;'>
-    <div style='border:2px solid #e74c3c; display:inline-block; padding:20px 40px; border-radius:15px;'>
+<head>
+    <meta charset='UTF-8'>
+    <meta name='viewport' content='width=device-width, initial-scale=1.0'>
+    <title>Server Control</title>
+</head>
+<body style='background:#121212; color:#777; font-family:sans-serif; text-align:center; padding-top:50px;'>
+    
+    <div style='border:2px solid #e74c3c; display:inline-block; padding:20px 40px; border-radius:15px; margin-bottom: 30px;'>
         <h1>🔴 SERVER OFFLINE</h1>
         <p>Folosește telecomanda din README pentru pornire.</p>
     </div>
+
+    <br>
+
+    <div style='background:#1e1e1e; display:inline-block; padding:30px; border-radius:15px; border: 1px solid #333; width: 80%; max-width: 400px;'>
+        <h3 style='color:#eee;'>🎵 YouTube Downloader</h3>
+        <input type='text' id='ytUrl' placeholder='Lipește link-ul YouTube aici...' 
+               style='width: 90%; padding: 12px; border-radius: 8px; border: 1px solid #444; background: #252525; color: white; margin-bottom: 20px;'>
+        <br>
+        <button onclick=\"startDownload('mp3')\" style='background: #e74c3c; color: white; padding: 12px 20px; border: none; border-radius: 8px; cursor: pointer; font-weight: bold; margin: 5px;'>
+            Descarcă MP3
+        </button>
+        <button onclick=\"startDownload('mp4')\" style='background: #3498db; color: white; padding: 12px 20px; border: none; border-radius: 8px; cursor: pointer; font-weight: bold; margin: 5px;'>
+            Descarcă MP4
+        </button>
+        <p id='statusText' style='font-size: 12px; margin-top: 15px; color: #555;'></p>
+    </div>
+
+    <script>
+    function startDownload(format) {
+        const url = document.getElementById('ytUrl').value;
+        if(!url) { alert('Te rog pune un link!'); return; }
+        
+        document.getElementById('statusText').innerText = 'Se procesează pe tabletă... te rog așteaptă.';
+        
+        // IP-ul tau de Tailscale
+        const tabletIp = '100.84.134.45'; 
+        window.location.href = 'http://' + tabletIp + ':9001/download?url=' + url + '&format=' + format;
+    }
+    </script>
+
 </body>
-</html>
+</html>" > index.html
