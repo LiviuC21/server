@@ -1,25 +1,19 @@
-[200~#!/bin/bash
+#!/bin/bash
 cd /home/phablet/server
 
-# 1. Oprim doar FileBrowser-ul vechi (NU atingem telecomanda!)
+# 1. Curățăm orice proces vechi sau blocat
 pkill -f filebrowser
+sleep 1
 
-# 2. Pornim FileBrowser folosind setările care au mers manual
-# Am pus '-p 8081' clar și '-a 0.0.0.0' ca să poată fi văzut de Tailscale
-nohup ./filebrowser -r /home/phablet/Downloads -p 8081 -a 0.0.0.0 > fb.log 2>&1 &
+# 2. Pornim FileBrowser
+# Am adăugat '-d filebrowser.db' pentru a folosi baza de date locală corectă
+nohup ./filebrowser -d /home/phablet/server/filebrowser.db -r /home/phablet/Downloads -p 8081 -a 0.0.0.0 > fb.log 2>&1 &
 
-# 3. Așteptăm 2 secunde să se așeze procesul
+# 3. Verificăm dacă a pornit cu adevărat
 sleep 2
-
-# 4. Modificăm pagina de GitHub să apară ONLINE și butonul de acces
-# Folosim 'sed' ca să fim siguri că nu stricăm restul codului HTML
-sed -i 's/SERVER OFFLINE/SERVER ONLINE/g' index.html
-sed -i 's/🔴/🟢/g' index.html
-sed -i 's/display: none/display: block/g' index.html
-
-# 5. Trimitem update-ul pe GitHub
-git add index.html
-git commit -m "Server Online - Pornit de la distanta"
-git push origin main
-
-echo "✅ Serverul a pornit și statusul a fost trimis pe GitHub!"
+if pgrep -x "filebrowser" > /dev/null
+then
+    echo "✅ FileBrowser a pornit cu succes pe portul 8081!"
+else
+    echo "❌ Eroare: FileBrowser nu a putut porni. Verifică fb.log"
+fi
