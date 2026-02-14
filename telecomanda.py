@@ -25,8 +25,13 @@ def home():
 # --- BUTOANELE DIN README (Pornire/Oprire FileBrowser) ---
 @app.route('/start')
 def start_server():
-    subprocess.Popen(['bash', '/home/phablet/server/start_server.sh'])
-    return "✅ FileBrowser a fost pornit!", 200
+    try:
+        # Folosim calea completă către bash
+        subprocess.Popen(['/bin/bash', '/home/phablet/server/start_server.sh'], 
+                         cwd='/home/phablet/server')
+        return "✅ Comanda de pornire a fost trimisă tabletei!", 200
+    except Exception as e:
+        return f"❌ Eroare la pornire: {str(e)}", 500
 
 @app.route('/stop')
 def stop_server():
