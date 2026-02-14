@@ -53,6 +53,17 @@
 
     <script>
         const IP = "100.84.134.45";
+        // Verifică dacă serverul e pornit la încărcarea paginii
+fetch(`http://${IP}:9000/`)
+    .then(r => {
+        if(r.ok) {
+            document.querySelector('h1').innerText = "🟢 SERVER ONLINE";
+            document.querySelector('.card').style.borderColor = "#2ecc71";
+        }
+    })
+    .catch(() => {
+        document.querySelector('h1').innerText = "🔴 SERVER OFFLINE";
+    });
 
         function executa(port, ruta) {
             const url = document.getElementById('ytUrl').value;
