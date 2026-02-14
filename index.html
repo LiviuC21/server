@@ -50,10 +50,20 @@
         const IP = "100.84.134.45";
 
         function yt(format) {
-            const url = document.getElementById('ytUrl').value;
-            if(!url) return alert("Pune un link!");
-            window.location.href = `http://${IP}:9001/download?format=${format}&url=${url}`;
-        }
+    const url = document.getElementById('ytUrl').value;
+    if(!url) return alert("Introdu un link de YouTube!");
+    
+    const tip = (format === 'mp3') ? "Muzica" : "Videoclipul";
+    alert(`⏳ ${tip} se descarcă pe tabletă. Vei primi confirmarea imediat...`);
+
+    // Folosim fetch pentru a nu părăsi pagina și a evita eroarea "Not Found"
+    fetch(`http://${IP}:9001/download?format=${format}&url=${url}`)
+    .then(r => r.text())
+    .then(mesaj => {
+        alert(mesaj); // Aici va apărea confirmarea finală
+    })
+    .catch(e => alert("Eroare la conexiunea cu tableta: " + e));
+}
 
         function up(id, ruta) {
             const fileInput = document.getElementById(id);
