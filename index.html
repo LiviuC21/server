@@ -53,5 +53,20 @@
             window.location.href = `http://100.84.134.45:9001/download?url=${url}&format=${format}`;
         }
     </script>
+
+    <div class="section">
+    <h3>Convertire din Imagine în PDF</h3>
+    <input type="file" id="imageInput" multiple accept="image/*">
+    <button onclick="uploadImages()">Convertește în PDF</button>
+    <p id="statusImage"></p>
+</div>
+
+<div class="section">
+    <h3>Scanner AI (OCR - Scris de mână)</h3>
+    <p><small>Limită: 6 pagini</small></p>
+    <input type="file" id="ocrInput" accept="application/pdf">
+    <button onclick="uploadOCR()">Scanează Text</button>
+    <p id="statusOCR"></p>
+</div>
 </body>
 </html>
