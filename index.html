@@ -3,78 +3,74 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Control Server Liviu</title>
+    <title>Server All-in-One Liviu</title>
     <style>
-        body { background-color: #121212; color: white; font-family: sans-serif; text-align: center; padding: 20px; }
-        .card { border: 2px solid #444; border-radius: 15px; padding: 20px; margin: 20px auto; max-width: 450px; background: #1a1a1a; }
-        .btn { padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer; font-weight: bold; margin: 5px; }
-        .btn-green { background: #2ecc71; color: white; width: 90%; }
-        input { width: 90%; padding: 10px; margin: 10px 0; border-radius: 5px; border: none; }
-        .status-msg { color: #f1c40f; font-weight: bold; margin-top: 10px; }
+        body { background-color: #121212; color: white; font-family: sans-serif; text-align: center; padding: 10px; }
+        .card { border: 2px solid #444; border-radius: 12px; padding: 15px; margin: 15px auto; max-width: 450px; background: #1a1a1a; }
+        .btn { padding: 10px; border: none; border-radius: 5px; cursor: pointer; font-weight: bold; margin: 5px; width: 45%; }
+        .btn-full { width: 95%; background: #2ecc71; color: white; margin-top: 10px; }
+        input { width: 90%; padding: 10px; margin: 10px 0; border-radius: 5px; border: none; background: #333; color: white; }
+        .status { color: #f1c40f; font-size: 14px; margin-top: 5px; }
     </style>
 </head>
 <body>
 
-    <div id="mainCard" class="card" style="border-color: #c0392b;">
-        <h1 id="statusEmoji">🔴</h1>
-        <h2 id="statusText">SERVER OFFLINE</h2>
-        <a href="http://100.84.134.45:8081" target="_blank" style="background:#f1c40f; color:black; padding:10px; display:block; text-decoration:none; width:80%; margin: 10px auto; border-radius:10px;">📂 INTRĂ PE SERVER</a>
+    <div class="card">
+        <h1>🔴 SERVER STATUS</h1>
+        <a href="http://100.84.134.45:8081" target="_blank" style="color:#f1c40f; text-decoration:none;">📂 DESCHIDE FILEBROWSER</a>
     </div>
 
     <div class="card">
-        <h3>🎵 YouTube Downloader</h3>
+        <h3>🎵 YouTube (Port 9001)</h3>
         <input type="text" id="ytUrl" placeholder="Link YouTube...">
-        <button onclick="descarca('mp3')" style="background:#e74c3c; color:white;" class="btn">MP3</button>
-        <button onclick="descarca('mp4')" style="background:#3498db; color:white;" class="btn">MP4</button>
+        <button onclick="executa('9001', 'download?format=mp3&url=')" style="background:#e74c3c; color:white;" class="btn">MP3</button>
+        <button onclick="executa('9001', 'download?format=mp4&url=')" style="background:#3498db; color:white;" class="btn">MP4</button>
     </div>
 
     <div class="card">
-        <h3>🖼️ Imagine în PDF</h3>
-        <input type="file" id="imageInput" multiple accept="image/*">
-        <button class="btn btn-green" onclick="uploadImages()">CONVERTEȘTE</button>
-        <p id="statusImage" class="status-msg"></p>
+        <h3>🖼️ Imagine ➔ PDF</h3>
+        <input type="file" id="imgInp" multiple accept="image/*">
+        <button class="btn btn-full" onclick="upload('imgInp', 'convert-images')">CONVERTEȘTE</button>
     </div>
 
     <div class="card">
-        <h3>📝 Scanner AI (OCR)</h3>
-        <input type="file" id="ocrInput" accept="application/pdf">
-        <button class="btn btn-green" onclick="uploadOCR()">SCANEAZĂ PDF</button>
-        <p id="statusOCR" class="status-msg"></p>
+        <h3>📄 PDF ➔ Word</h3>
+        <input type="file" id="pdfInp" accept=".pdf">
+        <button class="btn btn-full" onclick="upload('pdfInp', 'pdf-to-word')" style="background:#3498db;">TRANSFORMĂ ÎN DOCX</button>
+    </div>
+
+    <div class="card">
+        <h3>📝 Word ➔ PDF</h3>
+        <input type="file" id="wordInp" accept=".docx">
+        <button class="btn btn-full" onclick="upload('wordInp', 'word-to-pdf')" style="background:#9b59b6;">TRANSFORMĂ ÎN PDF</button>
+    </div>
+
+    <div class="card">
+        <h3>🧠 Scanner AI (OCR)</h3>
+        <input type="file" id="ocrInp" accept=".pdf,.jpg,.png">
+        <button class="btn btn-full" onclick="upload('ocrInp', 'ocr-scan')" style="background:#f39c12;">SCANEAZĂ (6 PAG)</button>
     </div>
 
     <script>
-        const SERVER_IP = "100.84.134.45";
-        const PORT_REMOTE = "9000";
-        const PORT_DL = "9001";
+        const IP = "100.84.134.45";
 
-        function descarca(format) {
+        function executa(port, ruta) {
             const url = document.getElementById('ytUrl').value;
-            if(!url) return alert("Pune un link!");
-            window.location.href = `http://${SERVER_IP}:${PORT_DL}/download?url=${url}&format=${format}`;
+            if(!url) return alert("Bagă un link!");
+            window.location.href = `http://${IP}:${port}/${ruta}${url}`;
         }
 
-        function uploadImages() {
-            const input = document.getElementById('imageInput');
-            const status = document.getElementById('statusImage');
-            if (input.files.length === 0) return alert("Alege poze!");
+        function upload(id, ruta) {
+            const fileInput = document.getElementById(id);
+            if (fileInput.files.length === 0) return alert("Selectează fișierele!");
+            
             const formData = new FormData();
-            for (let file of input.files) { formData.append("files", file); }
-            status.innerText = "⏳ Se trimite la portul 9000...";
-            fetch(`http://${SERVER_IP}:${PORT_REMOTE}/convert-images`, { method: 'POST', body: formData })
-            .then(res => res.text()).then(data => { status.innerText = "✅ Gata! Verifică folderul JPG_TO_PDF"; })
-            .catch(err => { status.innerText = "❌ Eroare: " + err; });
-        }
+            for (let file of fileInput.files) { formData.append("files", file); }
 
-        function uploadOCR() {
-            const input = document.getElementById('ocrInput');
-            const status = document.getElementById('statusOCR');
-            if (input.files.length === 0) return alert("Alege un PDF!");
-            const formData = new FormData();
-            formData.append("pdf", input.files[0]);
-            status.innerText = "🧠 AI-ul lucrează... Așteaptă.";
-            fetch(`http://${SERVER_IP}:${PORT_REMOTE}/ocr-scan`, { method: 'POST', body: formData })
-            .then(res => res.text()).then(data => { status.innerText = "✅ Scanare terminată!"; })
-            .catch(err => { status.innerText = "❌ Eroare AI: " + err; });
+            alert("⏳ Procesare pornită pe tabletă. Verifică FileBrowser în 1-2 minute.");
+            
+            fetch(`http://${IP}:9000/${ruta}`, { method: 'POST', body: formData })
+            .then(r => r.text()).then(d => alert("✅ " + d)).catch(e => alert("❌ Eroare: " + e));
         }
     </script>
 </body>
