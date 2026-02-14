@@ -8,9 +8,13 @@
         body { background-color: #121212; color: white; font-family: sans-serif; text-align: center; padding: 10px; }
         .card { border: 2px solid #444; border-radius: 12px; padding: 15px; margin: 15px auto; max-width: 450px; background: #1a1a1a; }
         .btn { padding: 10px; border: none; border-radius: 5px; cursor: pointer; font-weight: bold; width: 95%; margin: 5px; color: white; }
+        
+        /* Culori butoane */
         .btn-yt { background: #e74c3c; width: 45%; }
-        .btn-green { background: #c0392b; }
+        .btn-green { background: #2ecc71; } /* Reparat: era roșu în codul tău */
         .btn-blue { background: #3498db; }
+        .btn-orange { background: #f39c12; } /* Adăugat: Aceasta lipsea și de asta nu se vedea butonul! */
+        
         input { width: 90%; padding: 10px; margin: 10px 0; border-radius: 5px; border: none; background: #333; color: white; }
     </style>
 </head>
@@ -55,30 +59,38 @@
     <script>
         const IP = "100.84.134.45";
 
+        // Funcția YouTube reparată (nu mai schimbă pagina)
         function yt(format) {
-    const url = document.getElementById('ytUrl').value;
-    if(!url) return alert("Introdu un link de YouTube!");
-    
-    const tip = (format === 'mp3') ? "Muzica" : "Videoclipul";
-    alert(`⏳ ${tip} se descarcă pe tabletă. Vei primi confirmarea imediat...`);
+            const url = document.getElementById('ytUrl').value;
+            if(!url) return alert("Introdu un link de YouTube!");
+            
+            const tip = (format === 'mp3') ? "Muzica" : "Videoclipul";
+            alert(`⏳ ${tip} se descarcă pe tabletă. Vei primi confirmarea imediat...`);
 
-    // Folosim fetch pentru a nu părăsi pagina și a evita eroarea "Not Found"
-    fetch(`http://${IP}:9001/download?format=${format}&url=${url}`)
-    .then(r => r.text())
-    .then(mesaj => {
-        alert(mesaj); // Aici va apărea confirmarea finală
-    })
-    .catch(e => alert("Eroare la conexiunea cu tableta: " + e));
-}
+            fetch(`http://${IP}:9001/download?format=${format}&url=${url}`)
+            .then(r => r.text())
+            .then(mesaj => {
+                alert(mesaj); 
+            })
+            .catch(e => alert("Eroare la conexiunea cu tableta: " + e));
+        }
 
+        // Funcția de upload pentru toate conversiile (Port 9000)
         function up(id, ruta) {
             const fileInput = document.getElementById(id);
             if (fileInput.files.length === 0) return alert("Alege fișierele!");
+            
             const formData = new FormData();
-            for (let file of fileInput.files) { formData.append("files", file); }
+            for (let file of fileInput.files) { 
+                formData.append("files", file); 
+            }
+            
             alert("⏳ Se trimite la tabletă...");
+            
             fetch(`http://${IP}:9000/${ruta}`, { method: 'POST', body: formData })
-            .then(r => r.text()).then(d => alert(d)).catch(e => alert("Eroare: " + e));
+            .then(r => r.text())
+            .then(d => alert(d))
+            .catch(e => alert("Eroare: " + e));
         }
     </script>
 </body>
