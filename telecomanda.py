@@ -18,6 +18,11 @@ FOLDERS = {
 }
 for p in FOLDERS.values(): os.makedirs(p, exist_ok=True)
 
+# RUTA DE STATUS (Pentru becul verde de pe site)
+@app.route('/')
+def home():
+    return "Server Online", 200
+
 @app.route('/convert-images', methods=['POST'])
 def images_pdf():
     files = request.files.getlist("files")
@@ -45,6 +50,7 @@ def word_pdf():
         f = request.files.getlist("files")[0]
         p = os.path.join(FOLDERS["topdf"], f.filename)
         f.save(p)
+        # Folosim LibreOffice Headless
         subprocess.run(['libreoffice', '--headless', '--convert-to', 'pdf', '--outdir', FOLDERS["topdf"], p], check=True)
         return "✅ Word convertit profesional!"
     except Exception as e: return f"❌ Eroare: {str(e)}"
@@ -56,15 +62,13 @@ def ocr_scan():
         p = os.path.join(FOLDERS["ocr"], f.filename)
         f.save(p)
         
-        # --- PROCESARE OCHELARI (OpenCV) ---
+        # PROCESARE OCHELARI (OpenCV)
         img = cv2.imread(p)
-        gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY) # Alb-negru
-        # Eliminăm umbrele și mărim contrastul
+        gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
         processed = cv2.threshold(gray, 0, 255, cv2.THRESH_BINARY | cv2.THRESH_OTSU)[1]
         
         temp_p = os.path.join(FOLDERS["ocr"], "temp_clean.png")
         cv2.imwrite(temp_p, processed)
-        # --- FINAL PROCESARE ---
 
         text = pytesseract.image_to_string(Image.open(temp_p), lang='ron+eng')
         txt_p = os.path.join(FOLDERS["ocr"], f.filename.split('.')[0] + ".txt")
