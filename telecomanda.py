@@ -38,21 +38,27 @@ def images_pdf():
     except Exception as e:
         return f"❌ Eroare Imagini: {str(e)}", 500
 
-# 2. PDF ➔ WORD (pdf2docx)
+# 2. PDF ➔ WORD (Folosind LibreOffice pentru a păstra așezarea în pagină)
 @app.route('/pdf-to-word', methods=['POST'])
 def pdf_word():
     try:
         f = request.files.getlist("files")[0]
-        pdf_p = os.path.join(FOLDERS["word"], "temp_upload.pdf")
-        docx_p = os.path.join(FOLDERS["word"], f.filename.replace(".pdf", ".docx"))
-        f.save(pdf_p)
+        # Salvăm PDF-ul original
+        pdf_path = os.path.join(FOLDERS["word"], f.filename)
+        f.save(pdf_path)
         
-        cv = Converter(pdf_p)
-        cv.convert(docx_p)
-        cv.close()
-        return f"✅ Word creat în PDF_TO_WORD: {f.filename.replace('.pdf', '.docx')}", 200
-    except Exception as e:
-        return f"❌ Eroare PDF to Word: {str(e)}", 500
+        # Comanda LibreOffice: Deschide PDF-ul și îl exportă ca DOCX
+        # Notă: Rezultatul va fi un document Word tip "desen", bun pentru layout
+        subprocess.run([
+            'libreoffice', '--headless', 
+            '--convert-to', 'docx', 
+            '--outdir', FOLDERS["word"], 
+            pdf_path
+        ], check=True)
+        
+        return f"✅ PDF transformat în Word (via LibreOffice)!", 200
+    except Exception as e: 
+        return f"❌ Eroare la conversie: {str(e)}", 500
 
 # 3. WORD ➔ PDF (LibreOffice Headless) - ACEASTA ESTE NOUA ADĂUGARE
 @app.route('/word-to-pdf', methods=['POST'])
