@@ -3,8 +3,6 @@ cd /home/phablet/server
 
 # Oprim tot
 pkill -f filebrowser
-pkill -f telecomanda.py
-pkill -f downloader.py
 
 # Schimbam statusul in index.html inapoi pe rosu
 sed -i 's/SERVER ONLINE/SERVER OFFLINE/g' index.html
@@ -16,4 +14,4 @@ git add index.html
 git commit -m "Server oprit"
 git push origin main
 
-echo "🛑 Serverul a fost oprit."
+echo "🛑 Filebrowser a fost oprit, dar Managerul e încă la post!"
